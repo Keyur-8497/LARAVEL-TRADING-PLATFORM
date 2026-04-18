@@ -118,6 +118,13 @@ return [
             'replace_placeholders' => true,
         ],
 
+        'TradingErrorLog' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/TradingErrorLog.log'),
+            'level' => 'error',
+            'replace_placeholders' => true,
+        ],
+
         'null' => [
             'driver' => 'monolog',
             'handler' => NullHandler::class,
