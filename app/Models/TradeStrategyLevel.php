@@ -43,6 +43,17 @@ class TradeStrategyLevel extends Model
         'meta',
     ];
 
+    protected $casts = [
+        'meta' => 'array',
+        'buy_executed_at' => 'datetime',
+        'sell_executed_at' => 'datetime',
+        'buy_price' => 'decimal:2',
+        'target_price' => 'decimal:2',
+        'buy_executed_price' => 'decimal:2',
+        'sell_executed_price' => 'decimal:2',
+        'realized_pnl' => 'decimal:2',
+    ];
+
     public function InsertData(array $input): self
     {
         return static::create(Arr::only($input, $this->fillable));

@@ -43,6 +43,18 @@ class TradeStrategy extends Model
         'meta',
     ];
 
+    protected $casts = [
+        'meta' => 'array',
+        'started_at' => 'datetime',
+        'completed_at' => 'datetime',
+        'base_price' => 'decimal:2',
+        'buy_offset' => 'decimal:2',
+        'sell_offset' => 'decimal:2',
+        'capital_limit' => 'decimal:2',
+        'total_realized_pnl' => 'decimal:2',
+        'total_unrealized_pnl' => 'decimal:2',
+    ];
+
     public function InsertData(array $input): self
     {
         return static::create(Arr::only($input, $this->fillable));

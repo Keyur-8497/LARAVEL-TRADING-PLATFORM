@@ -158,7 +158,7 @@
                         </div>
                         <label class="block">
                             <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5 block">Capital Limit (INR)</span>
-                            <input id="capital-limit" type="number" min="1" step="1" value="5000"
+                            <input id="capital-limit" type="number" min="1" step="1" value="200"
                                 class="w-full rounded-xl border border-t-border bg-t-base px-3 py-2.5 text-sm font-data text-slate-200 focus:outline-none">
                         </label>
 
@@ -166,10 +166,6 @@
                             <button id="create-strategy"
                                 class="primary-btn flex-1 rounded-xl px-4 py-2.5 text-sm font-bold transition-colors">
                                 Create Strategy
-                            </button>
-                            <button id="reset-strategies"
-                                class="ghost-btn danger-btn rounded-xl border px-4 py-2.5 text-sm font-semibold transition-colors">
-                                Reset
                             </button>
                         </div>
                     </div>
@@ -374,7 +370,6 @@
                 allHistory: $('all-history'),
                 allHistoryCount: $('all-history-count'),
                 create: $('create-strategy'),
-                reset: $('reset-strategies'),
                 buyOffset: $('buy-offset'),
                 sellOffset: $('sell-offset'),
                 lotSize: $('lot-size'),
@@ -422,12 +417,15 @@
                     loading: false,
                     error: null
                 },
+                remoteStrategy: null,
+                hasActiveStrategy: false,
                 lastTickAt: null,
                 livePriceSocket: null
             };
 
             var renderPending = false;
             var activeTab = 'strategies';
+            var createStrategyInFlight = false;
 
             document.querySelectorAll('.tab-btn').forEach(function (btn) {
                 btn.addEventListener('click', function () {
@@ -534,6 +532,8 @@
                     state.lotLadder.summary = (result.lot_ladder && result.lot_ladder.summary) || 'No strategy';
                     state.lotLadder.rows = result.lot_ladder && Array.isArray(result.lot_ladder.rows) ? result.lot_ladder.rows : [];
                     state.lotLadder.error = null;
+                    state.remoteStrategy = result.strategy || null;
+                    state.hasActiveStrategy = Boolean(result.has_active_strategy);
 
                     state.positions.symbol = targetSymbol;
                     state.positions.rows = Array.isArray(result.positions) ? result.positions : [];
@@ -547,6 +547,8 @@
                     state.lotLadder.summary = 'Lot ladder unavailable';
                     state.lotLadder.rows = [];
                     state.lotLadder.error = error && error.message ? error.message : 'Unable to load symbol data.';
+                    state.remoteStrategy = null;
+                    state.hasActiveStrategy = false;
 
                     state.positions.symbol = targetSymbol;
                     state.positions.rows = [];
@@ -930,10 +932,29 @@
             }
             function renderStrategies() {
                 var strategies = selectedStrategies();
-                if (!strategies.length) {
+                var remoteStrategy = state.remoteStrategy && state.remoteStrategy.symbol === state.selectedSymbol ? state.remoteStrategy : null;
+
+                if (!strategies.length && !remoteStrategy) {
                     refs.strategyTable.innerHTML = '<div class="empty-state-box"><i class="fa-solid fa-layer-group"></i><p><strong>No Active Strategies</strong>Select a script and create a strategy to begin simulation</p></div>';
                     return;
                 }
+
+                if (!strategies.length && remoteStrategy) {
+                    refs.strategyTable.innerHTML = ''
+                        + '<div class="strategy-card rounded-2xl border border-blue-400/35 bg-t-raised/50 p-4">'
+                        + '<div class="flex items-start justify-between mb-3"><div><p class="text-sm font-bold text-white">' + esc(remoteStrategy.symbol) + '</p><p class="text-xs text-slate-500 mt-1">Buy INR ' + moneyPlain(remoteStrategy.buy_offset) + ' | Sell INR ' + moneyPlain(remoteStrategy.sell_offset) + ' | Lot ' + esc(remoteStrategy.lot_size) + '</p></div>'
+                        + '<div class="text-right"><p class="text-xs uppercase tracking-wider text-slate-500 mb-1">Status</p><p class="text-sm font-data font-bold text-emerald-400">' + esc(remoteStrategy.status || 'active').toUpperCase() + '</p></div></div>'
+                        + '<div class="grid grid-cols-4 gap-2 mb-3">'
+                        + '<div class="rounded-xl bg-t-base/65 border border-t-border px-2.5 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"><p class="text-xs uppercase tracking-wider text-slate-500 mb-1">Base</p><p class="text-sm font-data font-bold text-white">' + money(remoteStrategy.base_price) + '</p></div>'
+                        + '<div class="rounded-xl bg-t-base/65 border border-t-border px-2.5 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"><p class="text-xs uppercase tracking-wider text-slate-500 mb-1">Lot / Limit</p><p class="text-sm font-data font-bold text-white">' + esc(remoteStrategy.lot_size) + ' / ' + esc(remoteStrategy.lots_limit) + '</p></div>'
+                        + '<div class="rounded-xl bg-t-base/65 border border-t-border px-2.5 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"><p class="text-xs uppercase tracking-wider text-slate-500 mb-1">Capital</p><p class="text-sm font-data font-bold text-white">' + money(remoteStrategy.capital_limit) + '</p></div>'
+                        + '<div class="rounded-xl bg-t-base/65 border border-t-border px-2.5 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"><p class="text-xs uppercase tracking-wider text-slate-500 mb-1">Order</p><p class="text-sm font-data font-bold text-white">' + esc(remoteStrategy.market_order_status || '--') + '</p></div>'
+                        + '</div>'
+                        + '<div class="text-xs text-slate-500">Started at: <span class="font-data text-slate-300">' + esc(remoteStrategy.started_at || '--') + '</span></div>'
+                        + '</div>';
+                    return;
+                }
+
                 refs.strategyTable.innerHTML = strategies.map(function (strategy) {
                     var currentPrice = selectedStock() ? selectedStock().price : strategy.basePrice;
                     var sm = metrics(strategy, currentPrice);
@@ -1023,6 +1044,10 @@
             }
 
             function renderAllHistory() {
+                if (!refs.allHistory) {
+                    return;
+                }
+
                 var history = [];
                 state.strategies.filter(function (s) { return s.symbol === state.selectedSymbol; }).forEach(function (strategy) {
                     strategy.levels.filter(function (l) { return l.status === 'held'; }).forEach(function (level) {
@@ -1035,7 +1060,9 @@
                     history.push({ type: 'CLOSED', strategyName: trade.strategyName, symbol: trade.symbol, level: trade.level, buyPrice: trade.buyPrice, exitPrice: trade.sellPrice, qty: trade.qty, pnl: trade.pnl, time: trade.closedAt });
                 });
                 history.sort(function (a, b) { if (a.type === 'OPEN' && b.type !== 'OPEN') return -1; if (a.type !== 'OPEN' && b.type === 'OPEN') return 1; if (a.time && b.time) return b.time - a.time; return 0; });
-                refs.allHistoryCount.textContent = String(history.length);
+                if (refs.allHistoryCount) {
+                    refs.allHistoryCount.textContent = String(history.length);
+                }
                 if (!history.length) {
                     refs.allHistory.innerHTML = '<div class="empty-state-box"><i class="fa-solid fa-clock-rotate-left"></i><p><strong>No Trade History</strong>All open and closed positions appear here</p></div>';
                     return;
@@ -1049,10 +1076,11 @@
             }
 
             function renderCreateButton() {
-                var active = selectedStrategies().length > 0;
-                refs.create.disabled = active;
-                refs.create.className = active ? 'flex-1 rounded-xl px-4 py-2.5 text-sm font-bold cursor-not-allowed bg-slate-800/90 text-slate-500 border border-t-border' : 'primary-btn flex-1 rounded-xl px-4 py-2.5 text-sm font-bold transition-colors';
-                refs.create.textContent = active ? 'Strategy Already Running' : 'Create Strategy';
+                var active = state.hasActiveStrategy || selectedStrategies().length > 0;
+                var locked = active || createStrategyInFlight;
+                refs.create.disabled = locked;
+                refs.create.className = locked ? 'flex-1 rounded-xl px-4 py-2.5 text-sm font-bold cursor-not-allowed bg-slate-800/90 text-slate-500 border border-t-border' : 'primary-btn flex-1 rounded-xl px-4 py-2.5 text-sm font-bold transition-colors';
+                refs.create.textContent = createStrategyInFlight ? 'Creating...' : (active ? 'Strategy Already Running' : 'Create Strategy');
             }
 
             function render() {
@@ -1085,14 +1113,15 @@
             }
 
             async function createStrategy() {
-                if (selectedStrategies().length > 0) { return; }
+                if (state.hasActiveStrategy || selectedStrategies().length > 0) { return; }
+                if (createStrategyInFlight) { return; }
                 var stock = selectedStock();
                 var settings = form();
                 var response;
                 var result;
                 if (!stock || Object.values(settings).some(function (v) { return !Number.isFinite(v) || v <= 0; })) { return; }
-                refs.create.disabled = true;
-                refs.create.textContent = 'Creating...';
+                createStrategyInFlight = true;
+                renderCreateButton();
 
                 try {
                     response = await window.fetch(createStrategyUrl, {
@@ -1126,6 +1155,7 @@
                 } catch (error) {
                     window.alert(error && error.message ? error.message : 'Unable to create live strategy.');
                 } finally {
+                    createStrategyInFlight = false;
                     renderCreateButton();
                 }
             }
@@ -1202,13 +1232,6 @@
 
             refs.search.addEventListener('input', function () { renderList(); });
             refs.create.addEventListener('click', createStrategy);
-            refs.reset.addEventListener('click', function () {
-                state.strategies = [];
-                state.trades = [];
-                state.selectedStrategyId = null;
-                render();
-            });
-
             (function () {
                 var resizer  = $('panel-resizer');
                 var midPanel = $('mid-panel');

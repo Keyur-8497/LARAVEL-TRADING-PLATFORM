@@ -194,7 +194,11 @@ class TradingController extends FrontMainController
                 $levelInputData['buy_order_id'] = $isBaseLevel ? ($verifiedMarketOrderData['order_id'] ?? null) : null;
                 $levelInputData['buy_order_status'] = $isBaseLevel ? ($verifiedMarketOrderData['status'] ?? null) : null;
                 $levelInputData['buy_executed_price'] = $isBaseLevel ? (float) ($verifiedMarketOrderData['average_price'] ?? $basePrice) : null;
-                $levelInputData['buy_executed_at'] = $isBaseLevel ? ($verifiedMarketOrderData['exchange_timestamp'] ?? $verifiedMarketOrderData['order_timestamp'] ?? now()) : null;
+                $levelInputData['buy_executed_at'] = $isBaseLevel
+                    ? ($this->normalizeDateTimeValue($verifiedMarketOrderData['exchange_timestamp'] ?? null)
+                        ?? $this->normalizeDateTimeValue($verifiedMarketOrderData['order_timestamp'] ?? null)
+                        ?? now())
+                    : null;
                 $levelInputData['sell_gtt_trigger_id'] = $isBaseLevel ? ($sellTargetGtt['trigger_id'] ?? null) : null;
                 $levelInputData['sell_order_id'] = null;
                 $levelInputData['sell_order_status'] = null;
@@ -489,6 +493,8 @@ class TradingController extends FrontMainController
                 return response()->json([
                     'success' => true,
                     'symbol' => $input['symbol'],
+                    'has_active_strategy' => false,
+                    'strategy' => null,
                     'lot_ladder' => [
                         'summary' => 'No strategy',
                         'rows' => [],
@@ -584,6 +590,26 @@ class TradingController extends FrontMainController
             return response()->json([
                 'success' => true,
                 'symbol' => $input['symbol'],
+                'has_active_strategy' => true,
+                'strategy' => [
+                    'trade_strategy_id' => $strategy->trade_strategy_id,
+                    'symbol' => $strategy->symbol,
+                    'exchange' => $strategy->exchange,
+                    'tradingsymbol' => $strategy->tradingsymbol,
+                    'base_price' => round((float) $strategy->base_price, 2),
+                    'buy_offset' => round((float) $strategy->buy_offset, 2),
+                    'sell_offset' => round((float) $strategy->sell_offset, 2),
+                    'lot_size' => (int) $strategy->lot_size,
+                    'lots_limit' => (int) $strategy->lots_limit,
+                    'capital_limit' => round((float) $strategy->capital_limit, 2),
+                    'status' => (string) $strategy->status,
+                    'market_order_id' => $strategy->market_order_id,
+                    'market_order_status' => $strategy->market_order_status,
+                    'base_sell_gtt_trigger_id' => $strategy->base_sell_gtt_trigger_id,
+                    'total_realized_pnl' => round((float) $strategy->total_realized_pnl, 2),
+                    'total_unrealized_pnl' => round((float) $strategy->total_unrealized_pnl, 2),
+                    'started_at' => $strategy->started_at ? (string) $strategy->started_at : null,
+                ],
                 'lot_ladder' => [
                     'summary' => $strategy->symbol.' | '.($summaryParts !== [] ? implode(' / ', $summaryParts) : 'No activity'),
                     'rows' => $rows,
@@ -620,6 +646,31 @@ class TradingController extends FrontMainController
         }
 
         return $levels;
+    }
+
+    private function normalizeDateTimeValue(mixed $value): mixed
+    {
+        if ($value instanceof \DateTimeInterface) {
+            return $value;
+        }
+
+        if (is_string($value) && trim($value) !== '') {
+            return $value;
+        }
+
+        if (is_array($value)) {
+            $candidate = $value['date'] ?? $value['exchange_timestamp'] ?? $value['order_timestamp'] ?? null;
+
+            if ($candidate instanceof \DateTimeInterface) {
+                return $candidate;
+            }
+
+            if (is_string($candidate) && trim($candidate) !== '') {
+                return $candidate;
+            }
+        }
+
+        return null;
     }
 
     private function toArray(mixed $value): array
