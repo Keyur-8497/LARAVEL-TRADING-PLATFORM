@@ -1431,3 +1431,292 @@
     @keyframes tickDown { 0% { background-color: rgba(239, 68, 68, 0.14); } 100% { background-color: transparent; } }
     .tick-up   { animation: tickUp   0.55s ease-out; }
     .tick-down { animation: tickDown 0.55s ease-out; }
+
+    /* ================================================================
+       PROFESSIONAL TRADING TERMINAL — COMPONENT UPGRADE LAYER
+       All new classes; existing rules are untouched above.
+       ================================================================ */
+
+    /* ── Missing utility helpers ── */
+    .pl-3  { padding-left: 0.75rem; }
+    .mt-3  { margin-top: 0.75rem; }
+    .mb-0  { margin-bottom: 0; }
+    .gap-0 { gap: 0; }
+
+    /* ── Header metric card (vertical stacked: label above value) ── */
+    .hdr-metric {
+        display: flex;
+        flex-direction: column;
+        padding: 5px 14px 7px;
+        border-radius: 12px;
+        background: linear-gradient(180deg, rgba(14, 23, 39, 0.98), rgba(9, 15, 28, 0.98));
+        border: 1px solid rgba(40, 58, 90, 0.72);
+        box-shadow: 0 4px 14px rgba(1, 4, 13, 0.22), inset 0 1px 0 rgba(255,255,255,0.02);
+        min-width: 94px;
+    }
+    .hdr-metric .lbl {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        color: #4e6a88;
+        line-height: 1;
+        margin-bottom: 5px;
+        margin-top: 0;
+    }
+    .hdr-metric .val {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.9rem;
+        font-weight: 700;
+        line-height: 1;
+        margin: 0;
+    }
+
+    /* ── Sidebar stock list item (replaces .stock-item for live/paper) ── */
+    .sli {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.58rem 1rem;
+        border-left: 2px solid transparent;
+        border-bottom: 1px solid rgba(33, 47, 73, 0.42);
+        cursor: pointer;
+        transition: background 0.14s ease, border-color 0.14s ease;
+        min-height: 56px;
+    }
+    .sli:hover:not(.selected) {
+        background: linear-gradient(90deg, rgba(20, 31, 50, 0.72), rgba(15, 24, 40, 0.5));
+    }
+    .sli.selected {
+        border-left-color: #3b82f6;
+        background: linear-gradient(90deg, rgba(59, 130, 246, 0.12), rgba(18, 27, 44, 0.14));
+        box-shadow: inset 0 1px 0 rgba(147, 197, 253, 0.06);
+    }
+    .sli-sym {
+        font-size: 0.81rem;
+        font-weight: 700;
+        color: #e4e9f3;
+        letter-spacing: 0.025em;
+        line-height: 1;
+    }
+    .sli-price {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 0.87rem;
+        font-weight: 700;
+        color: #f0f4fb;
+        line-height: 1;
+        white-space: nowrap;
+    }
+    .sli-chg {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px;
+        font-weight: 600;
+        line-height: 1;
+        margin-top: 4px;
+        white-space: nowrap;
+    }
+    .sli-chg.pos { color: #34d399; }
+    .sli-chg.neg { color: #fb7185; }
+
+    /* ── Lot ladder status badge (higher contrast than old opacity classes) ── */
+    .ldr-badge {
+        display: inline-block;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 10px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 3px 8px;
+        border-radius: 4px;
+        line-height: 1.5;
+        white-space: nowrap;
+    }
+    .ldr-badge.held    { background: rgba(34, 197, 94, 0.13);  color: #4ade80; border: 1px solid rgba(34, 197, 94, 0.28); }
+    .ldr-badge.pending { background: rgba(245, 158, 11, 0.11); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.25); }
+    .ldr-badge.open    { background: rgba(14, 165, 233, 0.11); color: #38bdf8; border: 1px solid rgba(14, 165, 233, 0.25); }
+
+    /* ── Strategy card — inner stat cell ── */
+    .sc-stat {
+        padding: 8px 10px;
+        border-radius: 9px;
+        background: linear-gradient(180deg, rgba(7, 12, 22, 0.96), rgba(5, 9, 18, 0.98));
+        border: 1px solid rgba(30, 45, 70, 0.84);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.013);
+    }
+    .sc-stat-lbl {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: #4e6a88;
+        margin-bottom: 5px;
+        margin-top: 0;
+        line-height: 1;
+        display: block;
+    }
+    .sc-stat-val {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 13px;
+        font-weight: 700;
+        color: #cdd6e8;
+        line-height: 1;
+        margin: 0;
+    }
+
+    /* ── Capital utilisation bar (replaces old capital-bar) ── */
+    .cap-bar-wrap {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+        padding-top: 10px;
+        border-top: 1px solid rgba(33, 47, 73, 0.32);
+    }
+    .cap-bar-track {
+        flex: 1;
+        height: 3px;
+        border-radius: 99px;
+        background: rgba(10, 17, 30, 0.9);
+        overflow: hidden;
+        border: 1px solid rgba(33, 47, 73, 0.4);
+    }
+    .cap-bar-fill { height: 100%; border-radius: 99px; transition: width 0.4s ease; }
+    .cap-bar-fill.low  { background: linear-gradient(90deg, #1d4ed8, #60a5fa); }
+    .cap-bar-fill.mid  { background: linear-gradient(90deg, #b45309, #fbbf24); }
+    .cap-bar-fill.high { background: linear-gradient(90deg, #b91c1c, #f87171); }
+    .cap-bar-pct {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 12px;
+        font-weight: 700;
+        color: #4e6a88;
+        min-width: 38px;
+        text-align: right;
+        flex-shrink: 0;
+    }
+
+    /* ── Positions / closed-trades table container ── */
+    .tbl-wrap {
+        border: 1px solid rgba(32, 46, 72, 0.6);
+        border-radius: 12px;
+        overflow: hidden;
+        background: linear-gradient(180deg, rgba(8, 14, 26, 0.72), rgba(6, 10, 20, 0.52));
+    }
+    .tbl-wrap table { width: 100%; border-collapse: collapse; }
+    .tbl-wrap thead tr {
+        background: rgba(9, 15, 27, 0.6);
+        border-bottom: 1px solid rgba(33, 47, 73, 0.55);
+    }
+    .tbl-wrap th {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        color: #4e6a88;
+        padding: 9px 12px 8px;
+        white-space: nowrap;
+    }
+    .tbl-wrap td {
+        font-size: 12px;
+        padding: 9px 12px;
+        vertical-align: middle;
+        border-bottom: 1px solid rgba(33, 47, 73, 0.22);
+    }
+    .tbl-wrap tbody tr:last-child td { border-bottom: none; }
+    .tbl-wrap tbody tr:hover td { background: rgba(17, 26, 43, 0.7); }
+
+    /* ── P&L summary banner (above tables) ── */
+    .pnl-banner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 9px 14px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        border: 1px solid;
+    }
+    .pnl-banner.pos { background: rgba(34, 197, 94, 0.05);  border-color: rgba(34, 197, 94, 0.14); }
+    .pnl-banner.neg { background: rgba(239, 68, 68, 0.05);  border-color: rgba(239, 68, 68, 0.12); }
+    .pnl-banner-lbl {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: #4e6a88;
+        font-weight: 700;
+    }
+    .pnl-banner-val {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    /* ── Create-strategy form input label ── */
+    .inp-lbl {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: #4e6a88;
+        display: block;
+        margin-bottom: 7px;
+        line-height: 1;
+    }
+
+    /* ── Sidebar toggle / collapse ── */
+    #sidebar {
+        transition: width 0.24s cubic-bezier(0.4, 0, 0.2, 1),
+                    min-width 0.24s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    #sidebar.collapsed {
+        width: 2.75rem !important;
+        min-width: 2.75rem !important;
+    }
+    #sidebar.collapsed #sidebar-body { display: none; }
+    #sidebar.collapsed .sidebar-wl-label { display: none; }
+    #sidebar.collapsed .sidebar-rail-hdr { justify-content: center; padding-left: 0; padding-right: 0; }
+    #sidebar.collapsed .sidebar-toggle-btn i { transform: rotate(180deg); }
+
+    /* Sidebar header rail (always visible — holds label + toggle btn) */
+    .sidebar-rail-hdr {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 0.875rem;
+        height: 3rem;
+        flex-shrink: 0;
+    }
+    .sidebar-wl-label {
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        color: #5a7494;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    /* Toggle button */
+    .sidebar-toggle-btn {
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        border: 1px solid rgba(40, 58, 90, 0.7);
+        background: rgba(12, 20, 34, 0.9);
+        color: #516479;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+        flex-shrink: 0;
+        outline: none;
+    }
+    .sidebar-toggle-btn:hover {
+        color: #93c5fd;
+        border-color: rgba(96, 165, 250, 0.45);
+        background: rgba(22, 36, 58, 0.95);
+    }
+    .sidebar-toggle-btn i {
+        font-size: 10px;
+        transition: transform 0.24s cubic-bezier(0.4, 0, 0.2, 1);
+        pointer-events: none;
+    }

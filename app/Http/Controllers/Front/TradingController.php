@@ -5,10 +5,11 @@ namespace App\Http\Controllers\Front;
 use App\Models\TradeStrategy;
 use App\Models\TradeStrategyLevel;
 use App\Services\KiteSessionManager;
+use App\Support\ApplicationLogger;
+use App\Support\TradingErrorLogger;
 use App\Support\TradingInstrumentRegistry;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use KiteConnect\KiteConnect;
 
@@ -38,8 +39,21 @@ class TradingController extends FrontMainController
             'capital_limit' => ['required', 'numeric', 'gt:0'],
         ]);
 
+        ApplicationLogger::event('Create strategy request validated.', [
+            'symbol' => $input['symbol'],
+            'buy_offset' => $input['buy_offset'],
+            'sell_offset' => $input['sell_offset'],
+            'lot_size' => $input['lot_size'],
+            'lots_limit' => $input['lots_limit'],
+            'capital_limit' => $input['capital_limit'],
+        ]);
+
         
         if (! $this->kiteSessionManager->hasActiveSession()) {
+            ApplicationLogger::warning('Create strategy blocked because Zerodha session is inactive.', [
+                'symbol' => $input['symbol'],
+            ]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Your Zerodha session expired. Please connect Zerodha again.',
@@ -49,6 +63,11 @@ class TradingController extends FrontMainController
         $instrument = TradingInstrumentRegistry::get($input['symbol']);
         
         if (! ($instrument['tradable'] ?? false)) {
+            ApplicationLogger::warning('Create strategy blocked because symbol is not tradable.', [
+                'symbol' => $input['symbol'],
+                'instrument' => $instrument,
+            ]);
+
             return response()->json([
                 'success' => false,
                 'message' => $input['symbol'].' is not configured for live trading orders.',
@@ -213,6 +232,14 @@ class TradingController extends FrontMainController
 
                 $this->TradeStrategyLevel->InsertData($levelInputData);
             }
+
+            ApplicationLogger::event('Live strategy created successfully.', [
+                'trade_strategy_id' => $strategyRecord->trade_strategy_id,
+                'symbol' => $input['symbol'],
+                'market_order_id' => $verifiedMarketOrderData['order_id'] ?? null,
+                'base_sell_gtt_trigger_id' => $sellTargetGtt['trigger_id'] ?? null,
+                'buy_gtt_count' => count($buyGtts),
+            ]);
 
             return response()->json([
                 'success' => true,
@@ -740,7 +767,7 @@ class TradingController extends FrontMainController
 
     private function logTradingError(string $message, array $context = []): void
     {
-        Log::channel('TradingErrorLog')->error($message, $context);
+        TradingErrorLogger::write('error', $message, $context);
     }
 
     private function buildPositionsRows(string $symbol, array $instrument, array $positions): array

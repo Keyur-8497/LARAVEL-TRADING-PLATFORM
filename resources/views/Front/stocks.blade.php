@@ -25,17 +25,17 @@
         </span>
 
         <div class="flex items-center gap-1.5 ml-2">
-            <div class="metric-card flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs">
-                <span class="text-slate-500">Strategies</span>
-                <span id="metric-strategies" class="font-data font-bold text-slate-100 text-sm">0</span>
+            <div class="hdr-metric">
+                <p class="lbl">Strategies</p>
+                <p id="metric-strategies" class="val text-slate-100">0</p>
             </div>
-            <div class="metric-card flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs">
-                <span class="text-slate-500">Open P&amp;L</span>
-                <span id="metric-open" class="font-data font-bold text-emerald-400 text-sm">INR 0.00</span>
+            <div class="hdr-metric">
+                <p class="lbl">Open P&amp;L</p>
+                <p id="metric-open" class="val text-emerald-400">INR 0.00</p>
             </div>
-            <div class="metric-card flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs">
-                <span class="text-slate-500">Closed P&amp;L</span>
-                <span id="metric-closed" class="font-data font-bold text-emerald-400 text-sm">INR 0.00</span>
+            <div class="hdr-metric">
+                <p class="lbl">Closed P&amp;L</p>
+                <p id="metric-closed" class="val text-emerald-400">INR 0.00</p>
             </div>
         </div>
 
@@ -75,20 +75,27 @@
 
     <div class="flex flex-1 overflow-hidden">
         <aside id="sidebar" class="panel-shell w-64 shrink-0 border-r border-t-border flex flex-col">
-            <div class="panel-header px-4 pt-4 pb-3 border-b border-t-border">
-                <p class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400 mb-3">Watchlist</p>
-                <input
-                    id="symbol-search"
-                    type="text"
-                    placeholder="Search symbol..."
-                    class="w-full rounded-xl border border-t-border bg-t-base px-3 py-2.5 text-sm text-slate-200 placeholder:text-slate-600 focus:outline-none"
-                >
-                <div class="mt-3 rounded-xl border border-t-border bg-t-base/80 px-3 py-2.5">
-                    <p class="text-[10px] uppercase tracking-[0.2em] text-slate-500">Feed Status</p>
-                    <p id="sidebar-feed-status" class="mt-1 text-xs font-medium text-slate-300">Waiting for live ticks</p>
-                </div>
+            <div class="panel-header border-b border-t-border sidebar-rail-hdr">
+                <span class="sidebar-wl-label">Watchlist</span>
+                <button id="sidebar-toggle" class="sidebar-toggle-btn" title="Toggle watchlist">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
             </div>
-            <div id="script-list" class="flex-1 overflow-y-auto scroll-thin"></div>
+            <div id="sidebar-body" class="flex-1 flex flex-col overflow-hidden">
+                <div class="px-4 pt-3 pb-3 border-b border-t-border">
+                    <input
+                        id="symbol-search"
+                        type="text"
+                        placeholder="Search symbol..."
+                        class="w-full rounded-xl border border-t-border bg-t-base px-3 py-2.5 text-sm text-slate-200 placeholder:text-slate-600 focus:outline-none"
+                    >
+                    <div class="mt-3 rounded-xl border border-t-border bg-t-base/80 px-3 py-2.5">
+                        <p class="text-xs uppercase tracking-[0.15em] text-slate-500">Feed Status</p>
+                        <p id="sidebar-feed-status" class="mt-1 text-sm font-medium text-slate-300">Waiting for live ticks</p>
+                    </div>
+                </div>
+                <div id="script-list" class="flex-1 overflow-y-auto scroll-thin"></div>
+            </div>
         </aside>
 
         <main class="grid-bg flex-1 flex flex-col overflow-hidden bg-t-base">
@@ -134,30 +141,30 @@
                     <div class="p-4 space-y-3.5">
                         <div class="grid grid-cols-2 gap-3">
                             <label class="block">
-                                <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5 block">Buy Offset (INR)</span>
+                                <span class="inp-lbl">Buy Offset (INR)</span>
                                 <input id="buy-offset" type="number" min="0.01" step="0.01" value="1"
                                     class="w-full rounded-xl border border-t-border bg-t-base px-3 py-2.5 text-sm font-data text-slate-200 focus:outline-none">
                             </label>
                             <label class="block">
-                                <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5 block">Sell Offset (INR)</span>
+                                <span class="inp-lbl">Sell Offset (INR)</span>
                                 <input id="sell-offset" type="number" min="0.01" step="0.01" value="5"
                                     class="w-full rounded-xl border border-t-border bg-t-base px-3 py-2.5 text-sm font-data text-slate-200 focus:outline-none">
                             </label>
                         </div>
                         <div class="grid grid-cols-2 gap-3">
                             <label class="block">
-                                <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5 block">Lot Size</span>
+                                <span class="inp-lbl">Lot Size</span>
                                 <input id="lot-size" type="number" min="1" step="1" value="1"
                                     class="w-full rounded-xl border border-t-border bg-t-base px-3 py-2.5 text-sm font-data text-slate-200 focus:outline-none">
                             </label>
                             <label class="block">
-                                <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5 block">Lots Limit</span>
+                                <span class="inp-lbl">Lots Limit</span>
                                 <input id="lots-limit" type="number" min="1" step="1" value="5"
                                     class="w-full rounded-xl border border-t-border bg-t-base px-3 py-2.5 text-sm font-data text-slate-200 focus:outline-none">
                             </label>
                         </div>
                         <label class="block">
-                            <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-1.5 block">Capital Limit (INR)</span>
+                            <span class="inp-lbl">Capital Limit (INR)</span>
                             <input id="capital-limit" type="number" min="1" step="1" value="200"
                                 class="w-full rounded-xl border border-t-border bg-t-base px-3 py-2.5 text-sm font-data text-slate-200 focus:outline-none">
                         </label>
@@ -688,25 +695,21 @@
                         ? (priceDiff * 100) / Number(stock.basePrice || 0)
                         : Number(stock.change || 0);
                     var isPos = priceDiff >= 0;
-                    var changeColor = isPos ? 'text-emerald-400' : 'text-rose-400';
-                    var priceChange = priceDiff.toFixed(2);
-                    var percentChange = percentDiff.toFixed(2) + '%';
+                    var chgSign = isPos ? '+' : '';
                     return ''
-                        + '<div data-symbol="' + esc(stock.symbol) + '" class="stock-item flex items-center justify-between px-4 py-3 cursor-pointer ' + (selected ? 'selected ' : '') + '">'
+                        + '<div data-symbol="' + esc(stock.symbol) + '" class="sli' + (selected ? ' selected' : '') + '">'
                         + '<div class="min-w-0 flex-1">'
-                        + '<div class="flex items-center gap-1.5">'
-                        + '<p class="text-sm font-bold text-white truncate">' + esc(stock.symbol) + '</p>'
+                        + '<div class="flex items-center gap-1.5 mb-1">'
+                        + '<p class="sli-sym">' + esc(stock.symbol) + '</p>'
                         + (hasStrat ? '<span class="strat-dot"></span>' : '')
                         + '</div>'
+                        + '<p class="sli-chg ' + (isPos ? 'pos' : 'neg') + '">' + chgSign + priceDiff.toFixed(2) + ' (' + chgSign + percentDiff.toFixed(2) + '%)</p>'
                         + '</div>'
-                        + '<div class="text-right shrink-0 pl-2">'
-                        + '<p class="text-[10px] font-data mb-1 ' + changeColor + '">'
-                        + priceChange + ' <span class="opacity-70">' + percentChange + '</span>'
-                        + '</p>'
-                        + '<p class="text-sm font-data font-bold text-white leading-none">' + moneyPlain(stock.price) + '</p>'
+                        + '<div class="shrink-0 pl-3 text-right">'
+                        + '<p class="sli-price">' + moneyPlain(stock.price) + '</p>'
                         + '</div>'
                         + '</div>';
-                }).join('') || '<div class="px-4 py-5 text-xs text-slate-500 text-center">No symbols found</div>';
+                }).join('') || '<div class="px-4 py-8 text-xs text-slate-500 text-center">No symbols found</div>';
 
                 refs.list.querySelectorAll('[data-symbol]').forEach(function (item) {
                     item.addEventListener('click', function () {
@@ -747,8 +750,8 @@
                 refs.metricStrategies.textContent = String(strategies.length);
                 refs.metricOpen.textContent = money(open);
                 refs.metricClosed.textContent = money(closed);
-                refs.metricOpen.className = 'font-data font-bold text-sm ' + (open >= 0 ? 'text-emerald-400' : 'text-rose-400');
-                refs.metricClosed.className = 'font-data font-bold text-sm ' + (closed >= 0 ? 'text-emerald-400' : 'text-rose-400');
+                refs.metricOpen.className = 'val ' + (open >= 0 ? 'text-emerald-400' : 'text-rose-400');
+                refs.metricClosed.className = 'val ' + (closed >= 0 ? 'text-emerald-400' : 'text-rose-400');
             }
 
             function renderLadder() {
@@ -779,8 +782,8 @@
                     refs.ladderSummary.textContent = remoteLadder.summary || 'Active strategy';
 
                     header = ''
-                        + '<div class="grid grid-cols-[40px_1fr_1fr_52px_68px_88px] gap-2 px-3 py-2 text-[9px] font-bold uppercase tracking-wider text-slate-600 border-b border-t-border mb-1">'
-                        + '<span>Lvl</span><span>Buy → Target</span><span></span><span class="text-right">Qty</span><span class="text-right">Status</span><span class="text-right">P&amp;L</span>'
+                        + '<div class="grid grid-cols-[40px_1fr_1fr_52px_68px_88px] gap-2 px-3 py-2 text-[11px] font-semibold uppercase tracking-wider text-slate-500 border-b border-t-border mb-1">'
+                        + '<span>Lvl</span><span>Buy</span><span>Target</span><span class="text-right">Qty</span><span class="text-right">Status</span><span class="text-right">P&amp;L</span>'
                         + '</div>';
 
                     priceMarkerInserted = false;
@@ -792,11 +795,7 @@
                         var isOpen = status === 'OPEN';
                         var pnl = Number(level.pnl || 0);
                         var pnlClass = pnl >= 0 ? 'pnl-pos' : 'pnl-neg';
-                        var statusColor = isHeld
-                            ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
-                            : (isOpen
-                                ? 'bg-sky-500/15 text-sky-300 border border-sky-500/30'
-                                : 'bg-amber-500/15 text-amber-300 border border-amber-500/30');
+                        var statusColor = isHeld ? 'ldr-badge held' : (isOpen ? 'ldr-badge open' : 'ldr-badge pending');
                         var rowClass = 'ladder-row grid grid-cols-[40px_1fr_1fr_52px_68px_88px] gap-2 items-center px-3 py-2 rounded-xl text-sm bg-t-raised/45';
                         var buyCell;
 
@@ -831,7 +830,7 @@
                             + buyCell
                             + '<span class="font-data font-bold text-amber-300">' + moneyPlain(level.target_price) + '</span>'
                             + '<span class="font-data text-right text-slate-400 font-medium">' + esc(level.quantity) + '</span>'
-                            + '<span class="text-right"><span class="text-[9px] font-bold rounded px-1.5 py-0.5 ' + statusColor + '">' + esc(status) + '</span></span>'
+                            + '<span class="text-right"><span class="' + statusColor + '">' + esc(status) + '</span></span>'
                             + '<span class="font-data text-right font-bold text-sm ' + pnlClass + '">' + moneyPlain(pnl) + '</span>'
                             + '</div>'
                         );
@@ -862,8 +861,8 @@
                 refs.ladderSummary.textContent = strategy.name + ' | ' + lm.held + 'H / ' + lm.pending + 'P';
 
                 var header = ''
-                    + '<div class="grid grid-cols-[40px_1fr_1fr_52px_68px_88px] gap-2 px-3 py-2 text-[9px] font-bold uppercase tracking-wider text-slate-600 border-b border-t-border mb-1">'
-                    + '<span>Lvl</span><span>Buy → Target</span><span></span><span class="text-right">Qty</span><span class="text-right">Status</span><span class="text-right">P&amp;L</span>'
+                    + '<div class="grid grid-cols-[40px_1fr_1fr_52px_68px_88px] gap-2 px-3 py-2 text-[11px] font-semibold uppercase tracking-wider text-slate-500 border-b border-t-border mb-1">'
+                    + '<span>Lvl</span><span>Buy</span><span>Target</span><span class="text-right">Qty</span><span class="text-right">Status</span><span class="text-right">P&amp;L</span>'
                     + '</div>';
 
                 var activeLevels = strategy.levels
@@ -888,9 +887,7 @@
 
                     var pnl = level.status === 'held' ? (currentPrice - level.buyPrice) * level.qty : level.closedPnl;
                     var pnlClass = pnl >= 0 ? 'pnl-pos' : 'pnl-neg';
-                    var statusColor = level.status === 'held'
-                        ? 'bg-emerald-500/15 text-emerald-300 border border-emerald-500/30'
-                        : 'bg-amber-500/15 text-amber-300 border border-amber-500/30';
+                    var statusColor = level.status === 'held' ? 'ldr-badge held' : 'ldr-badge pending';
                     var statusText = level.status === 'held' ? 'HELD' : 'PENDING';
                     var rowClass = 'ladder-row is-' + level.status + ' grid grid-cols-[40px_1fr_1fr_52px_68px_88px] gap-2 items-center px-3 py-2 rounded-xl text-sm bg-t-raised/45';
 
@@ -912,7 +909,7 @@
                         + buyCell
                         + '<span class="font-data font-bold text-amber-300">' + moneyPlain(level.targetPrice) + '</span>'
                         + '<span class="font-data text-right text-slate-400 font-medium">' + level.qty + '</span>'
-                        + '<span class="text-right"><span class="text-[9px] font-bold rounded px-1.5 py-0.5 ' + statusColor + '">' + statusText + '</span></span>'
+                        + '<span class="text-right"><span class="' + statusColor + '">' + statusText + '</span></span>'
                         + '<span class="font-data text-right font-bold text-sm ' + pnlClass + '">' + moneyPlain(pnl) + '</span>'
                         + '</div>'
                     );
@@ -941,16 +938,16 @@
 
                 if (!strategies.length && remoteStrategy) {
                     refs.strategyTable.innerHTML = ''
-                        + '<div class="strategy-card rounded-2xl border border-blue-400/35 bg-t-raised/50 p-4">'
-                        + '<div class="flex items-start justify-between mb-3"><div><p class="text-sm font-bold text-white">' + esc(remoteStrategy.symbol) + '</p><p class="text-xs text-slate-500 mt-1">Buy INR ' + moneyPlain(remoteStrategy.buy_offset) + ' | Sell INR ' + moneyPlain(remoteStrategy.sell_offset) + ' | Lot ' + esc(remoteStrategy.lot_size) + '</p></div>'
-                        + '<div class="text-right"><p class="text-xs uppercase tracking-wider text-slate-500 mb-1">Status</p><p class="text-sm font-data font-bold text-emerald-400">' + esc(remoteStrategy.status || 'active').toUpperCase() + '</p></div></div>'
-                        + '<div class="grid grid-cols-4 gap-2 mb-3">'
-                        + '<div class="rounded-xl bg-t-base/65 border border-t-border px-2.5 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"><p class="text-xs uppercase tracking-wider text-slate-500 mb-1">Base</p><p class="text-sm font-data font-bold text-white">' + money(remoteStrategy.base_price) + '</p></div>'
-                        + '<div class="rounded-xl bg-t-base/65 border border-t-border px-2.5 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"><p class="text-xs uppercase tracking-wider text-slate-500 mb-1">Lot / Limit</p><p class="text-sm font-data font-bold text-white">' + esc(remoteStrategy.lot_size) + ' / ' + esc(remoteStrategy.lots_limit) + '</p></div>'
-                        + '<div class="rounded-xl bg-t-base/65 border border-t-border px-2.5 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"><p class="text-xs uppercase tracking-wider text-slate-500 mb-1">Capital</p><p class="text-sm font-data font-bold text-white">' + money(remoteStrategy.capital_limit) + '</p></div>'
-                        + '<div class="rounded-xl bg-t-base/65 border border-t-border px-2.5 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"><p class="text-xs uppercase tracking-wider text-slate-500 mb-1">Order</p><p class="text-sm font-data font-bold text-white">' + esc(remoteStrategy.market_order_status || '--') + '</p></div>'
+                        + '<div class="strategy-card rounded-2xl border border-t-border p-4">'
+                        + '<div class="flex items-start justify-between mb-3"><div><p class="text-sm font-bold text-white">' + esc(remoteStrategy.symbol) + '</p><p class="text-xs text-slate-500 mt-1 font-data">Buy ' + moneyPlain(remoteStrategy.buy_offset) + ' &middot; Sell ' + moneyPlain(remoteStrategy.sell_offset) + ' &middot; Lot ' + esc(remoteStrategy.lot_size) + '</p></div>'
+                        + '<div class="text-right"><p class="sc-stat-lbl mb-1">Status</p><span class="ldr-badge held">' + esc(remoteStrategy.status || 'active').toUpperCase() + '</span></div></div>'
+                        + '<div class="grid grid-cols-4 gap-2">'
+                        + '<div class="sc-stat"><p class="sc-stat-lbl">Base</p><p class="sc-stat-val">' + money(remoteStrategy.base_price) + '</p></div>'
+                        + '<div class="sc-stat"><p class="sc-stat-lbl">Lot / Limit</p><p class="sc-stat-val">' + esc(remoteStrategy.lot_size) + ' / ' + esc(remoteStrategy.lots_limit) + '</p></div>'
+                        + '<div class="sc-stat"><p class="sc-stat-lbl">Capital</p><p class="sc-stat-val">' + money(remoteStrategy.capital_limit) + '</p></div>'
+                        + '<div class="sc-stat"><p class="sc-stat-lbl">Order Mode</p><p class="sc-stat-val">' + esc(remoteStrategy.market_order_status || '--') + '</p></div>'
                         + '</div>'
-                        + '<div class="text-xs text-slate-500">Started at: <span class="font-data text-slate-300">' + esc(remoteStrategy.started_at || '--') + '</span></div>'
+                        + '<div class="text-xs text-slate-500 mt-3">Started at: <span class="font-data text-slate-300">' + esc(remoteStrategy.started_at || '--') + '</span></div>'
                         + '</div>';
                     return;
                 }
@@ -962,15 +959,17 @@
                     var bar = strategy.capitalLimit ? Math.min((sm.committed / strategy.capitalLimit) * 100, 100) : 0;
                     var isSelected = strategy.id === state.selectedStrategyId;
                     return ''
-                        + '<div data-strategy="' + strategy.id + '" class="strategy-card rounded-2xl border p-4 ' + (isSelected ? 'selected border-blue-400/50 ' : 'border-t-border bg-t-raised/50') + '">'
-                        + '<div class="flex items-start justify-between mb-3"><div><p class="text-sm font-bold text-white">' + esc(strategy.name) + '</p><p class="text-xs text-slate-500 mt-1">Buy INR ' + strategy.buyOffset + ' | Sell INR ' + strategy.sellOffset + ' | Lot ' + strategy.lotSize + '</p></div>'
-                        + '<div class="text-right"><p class="text-xs uppercase tracking-wider text-slate-500 mb-1">Total P&amp;L</p><p class="text-base font-data font-bold ' + (total >= 0 ? 'text-emerald-400' : 'text-rose-400') + '">' + money(total) + '</p></div></div>'
-                        + '<div class="grid grid-cols-4 gap-2 mb-3">'
-                        + '<div class="rounded-xl bg-t-base/65 border border-t-border px-2.5 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"><p class="text-xs uppercase tracking-wider text-slate-500 mb-1">Base</p><p class="text-sm font-data font-bold text-white">' + money(strategy.basePrice) + '</p></div>'
-                        + '<div class="rounded-xl bg-t-base/65 border border-t-border px-2.5 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"><p class="text-xs uppercase tracking-wider text-slate-500 mb-1">Held / Pend</p><p class="text-sm font-data font-bold text-white">' + sm.held + ' / ' + sm.pending + '</p></div>'
-                        + '<div class="rounded-xl bg-t-base/65 border border-t-border px-2.5 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"><p class="text-xs uppercase tracking-wider text-slate-500 mb-1">Committed</p><p class="text-sm font-data font-bold text-white">' + money(sm.committed) + '</p></div>'
-                        + '<div class="rounded-xl bg-t-base/65 border border-t-border px-2.5 py-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"><p class="text-xs uppercase tracking-wider text-slate-500 mb-1">Remaining</p><p class="text-sm font-data font-bold text-white">' + money(sm.remaining) + '</p></div>'
-                        + '</div><div class="flex items-center gap-2.5"><div class="flex-1 h-2 rounded-full bg-t-base overflow-hidden border border-t-border/60"><div class="capital-bar h-full rounded-full ' + (bar > 80 ? 'bg-rose-400' : bar > 50 ? 'bg-amber-400' : 'bg-blue-400') + '" style="width:' + bar + '%"></div></div><span class="text-xs font-data font-semibold text-slate-400 shrink-0">' + bar.toFixed(0) + '%</span></div></div>';
+                        + '<div data-strategy="' + strategy.id + '" class="strategy-card rounded-2xl border p-4 ' + (isSelected ? 'selected border-blue-400/50' : 'border-t-border bg-t-raised/50') + '">'
+                        + '<div class="flex items-start justify-between mb-3"><div><p class="text-sm font-bold text-white">' + esc(strategy.name) + '</p><p class="text-xs text-slate-500 mt-1 font-data">Buy ' + strategy.buyOffset + ' &middot; Sell ' + strategy.sellOffset + ' &middot; Lot ' + strategy.lotSize + '</p></div>'
+                        + '<div class="text-right"><p class="sc-stat-lbl mb-1">Total P&L</p><p class="text-base font-data font-bold ' + (total >= 0 ? 'text-emerald-400' : 'text-rose-400') + '">' + money(total) + '</p></div></div>'
+                        + '<div class="grid grid-cols-4 gap-2">'
+                        + '<div class="sc-stat"><p class="sc-stat-lbl">Base</p><p class="sc-stat-val">' + money(strategy.basePrice) + '</p></div>'
+                        + '<div class="sc-stat"><p class="sc-stat-lbl">Held / Pend</p><p class="sc-stat-val">' + sm.held + ' / ' + sm.pending + '</p></div>'
+                        + '<div class="sc-stat"><p class="sc-stat-lbl">Committed</p><p class="sc-stat-val">' + money(sm.committed) + '</p></div>'
+                        + '<div class="sc-stat"><p class="sc-stat-lbl">Remaining</p><p class="sc-stat-val">' + money(sm.remaining) + '</p></div>'
+                        + '</div>'
+                        + '<div class="cap-bar-wrap"><div class="cap-bar-track"><div class="cap-bar-fill ' + (bar > 80 ? 'high' : bar > 50 ? 'mid' : 'low') + '" style="width:' + bar.toFixed(0) + '%"></div></div><span class="cap-bar-pct">' + bar.toFixed(0) + '%</span></div>'
+                        + '</div>';
                 }).join('');
 
                 refs.strategyTable.querySelectorAll('[data-strategy]').forEach(function (row) {
@@ -1004,10 +1003,10 @@
                 }
 
                 refs.openTrades.innerHTML = ''
-                    + '<div class="flex items-center justify-between rounded-xl bg-emerald-500/8 border border-emerald-500/15 px-3 py-2 mb-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"><span class="text-[10px] text-slate-400">Total Unrealized P&amp;L</span><span class="text-sm font-data font-bold ' + (totalPnl >= 0 ? 'text-emerald-400' : 'text-rose-400') + '">' + money(totalPnl) + '</span></div>'
-                    + '<div class="overflow-x-auto"><table class="w-full text-[11px]"><thead><tr class="border-b border-t-border text-[9px] uppercase tracking-wider text-slate-500"><th class="pb-2 pr-3 text-left">Symbol</th><th class="pb-2 pr-3 text-left">Product</th><th class="pb-2 pr-3 text-right font-data">Avg Buy</th><th class="pb-2 pr-3 text-right font-data">Last Price</th><th class="pb-2 pr-3 text-right font-data">Buy Qty</th><th class="pb-2 pr-3 text-right font-data">Sell Qty</th><th class="pb-2 pr-3 text-right font-data">Net Qty</th><th class="pb-2 text-right font-data">P&amp;L</th></tr></thead><tbody>'
+                    + '<div class="pnl-banner ' + (totalPnl >= 0 ? 'pos' : 'neg') + '"><span class="pnl-banner-lbl">Total Unrealized P&L</span><span class="pnl-banner-val ' + (totalPnl >= 0 ? 'text-emerald-400' : 'text-rose-400') + '">' + money(totalPnl) + '</span></div>'
+                    + '<div class="tbl-wrap"><table><thead><tr><th class="text-left">Symbol</th><th class="text-left">Product</th><th class="text-right">Avg Buy</th><th class="text-right">Last Price</th><th class="text-right">Buy Qty</th><th class="text-right">Sell Qty</th><th class="text-right">Net Qty</th><th class="text-right">P&L</th></tr></thead><tbody>'
                     + livePositions.map(function (position) {
-                        return '<tr class="row-hover border-b border-t-border/50"><td class="py-2 pr-3 font-semibold text-white">' + esc(position.symbol) + '</td><td class="py-2 pr-3 text-slate-400">' + esc(position.product) + '</td><td class="py-2 pr-3 text-right font-data text-slate-300">' + money(position.average_price) + '</td><td class="py-2 pr-3 text-right font-data font-medium text-white">' + money(position.last_price) + '</td><td class="py-2 pr-3 text-right font-data text-slate-300">' + esc(position.buy_quantity) + '</td><td class="py-2 pr-3 text-right font-data text-slate-300">' + esc(position.sell_quantity) + '</td><td class="py-2 pr-3 text-right font-data text-slate-300">' + esc(position.quantity) + '</td><td class="py-2 text-right font-data font-semibold ' + (Number(position.pnl || 0) >= 0 ? 'text-emerald-400' : 'text-rose-400') + '">' + money(position.pnl) + '</td></tr>';
+                        return '<tr><td class="font-semibold text-white">' + esc(position.symbol) + '</td><td class="text-slate-400">' + esc(position.product) + '</td><td class="text-right font-data text-slate-300">' + money(position.average_price) + '</td><td class="text-right font-data font-semibold text-white">' + money(position.last_price) + '</td><td class="text-right font-data text-slate-300">' + esc(position.buy_quantity) + '</td><td class="text-right font-data text-slate-300">' + esc(position.sell_quantity) + '</td><td class="text-right font-data text-slate-300">' + esc(position.quantity) + '</td><td class="text-right font-data font-semibold ' + (Number(position.pnl || 0) >= 0 ? 'pnl-pos' : 'pnl-neg') + '">' + money(position.pnl) + '</td></tr>';
                     }).join('')
                     + '</tbody></table></div>';
             }
@@ -1034,11 +1033,11 @@
                 }
 
                 refs.tradeLog.innerHTML = ''
-                    + '<div class="flex items-center justify-between rounded-xl bg-sky-500/8 border border-sky-500/15 px-3 py-2 mb-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"><span class="text-[10px] text-slate-400">Total Realized P&amp;L</span><span class="text-sm font-data font-bold ' + (totalPnl >= 0 ? 'text-emerald-400' : 'text-rose-400') + '">' + money(totalPnl) + '</span></div>'
-                    + '<div class="overflow-x-auto"><table class="w-full text-[11px]"><thead><tr class="border-b border-t-border text-[9px] uppercase tracking-wider text-slate-500"><th class="pb-2 pr-3 text-left">Symbol</th><th class="pb-2 pr-3 text-left">Level</th><th class="pb-2 pr-3 text-right font-data">Buy</th><th class="pb-2 pr-3 text-right font-data">Sell</th><th class="pb-2 pr-3 text-right font-data">Qty</th><th class="pb-2 pr-3 text-left">Closed At</th><th class="pb-2 text-right font-data">P&amp;L</th></tr></thead><tbody>'
+                    + '<div class="pnl-banner ' + (totalPnl >= 0 ? 'pos' : 'neg') + '"><span class="pnl-banner-lbl">Total Realized P&L</span><span class="pnl-banner-val ' + (totalPnl >= 0 ? 'text-emerald-400' : 'text-rose-400') + '">' + money(totalPnl) + '</span></div>'
+                    + '<div class="tbl-wrap"><table><thead><tr><th class="text-left">Symbol</th><th class="text-left">Level</th><th class="text-right">Buy</th><th class="text-right">Sell</th><th class="text-right">Qty</th><th class="text-left">Closed At</th><th class="text-right">P&L</th></tr></thead><tbody>'
                     + closedTrades.map(function (trade) {
                         var closedAt = trade.closed_at ? new Date(trade.closed_at).toLocaleString() : '--';
-                        return '<tr class="row-hover border-b border-t-border/50"><td class="py-2 pr-3 font-semibold text-white">' + esc(trade.symbol) + '</td><td class="py-2 pr-3 text-slate-400">L' + esc(trade.level) + '</td><td class="py-2 pr-3 text-right font-data text-slate-300">' + money(trade.buy_price) + '</td><td class="py-2 pr-3 text-right font-data text-slate-300">' + money(trade.sell_price) + '</td><td class="py-2 pr-3 text-right font-data text-slate-300">' + esc(trade.quantity) + '</td><td class="py-2 pr-3 text-slate-400">' + esc(closedAt) + '</td><td class="py-2 text-right font-data font-semibold ' + (Number(trade.pnl || 0) >= 0 ? 'text-emerald-400' : 'text-rose-400') + '">' + money(trade.pnl) + '</td></tr>';
+                        return '<tr><td class="font-semibold text-white">' + esc(trade.symbol) + '</td><td class="text-slate-400">L' + esc(trade.level) + '</td><td class="text-right font-data text-slate-300">' + money(trade.buy_price) + '</td><td class="text-right font-data text-slate-300">' + money(trade.sell_price) + '</td><td class="text-right font-data text-slate-300">' + esc(trade.quantity) + '</td><td class="text-slate-400">' + esc(closedAt) + '</td><td class="text-right font-data font-semibold ' + (Number(trade.pnl || 0) >= 0 ? 'pnl-pos' : 'pnl-neg') + '">' + money(trade.pnl) + '</td></tr>';
                     }).join('')
                     + '</tbody></table></div>';
             }
@@ -1232,6 +1231,14 @@
 
             refs.search.addEventListener('input', function () { renderList(); });
             refs.create.addEventListener('click', createStrategy);
+            (function () {
+                var sidebarEl = $('sidebar');
+                var toggleBtn = $('sidebar-toggle');
+                if (!sidebarEl || !toggleBtn) { return; }
+                toggleBtn.addEventListener('click', function () {
+                    sidebarEl.classList.toggle('collapsed');
+                });
+            })();
             (function () {
                 var resizer  = $('panel-resizer');
                 var midPanel = $('mid-panel');

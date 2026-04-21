@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Front;
 
 use App\Services\KiteSessionManager;
+use App\Support\ApplicationLogger;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class ZerodhaAuthController extends FrontMainController
 {
@@ -16,10 +16,14 @@ class ZerodhaAuthController extends FrontMainController
     public function redirectToProvider(): RedirectResponse
     {
         if (! filled(config('kite.api_key')) || ! filled(config('kite.api_secret'))) {
+            ApplicationLogger::warning('Zerodha login blocked because API credentials are missing.');
+
             return redirect()
                 ->route('home')
                 ->with('error', 'Add KITE_API_KEY and KITE_API_SECRET in your .env file before connecting Zerodha.');
         }
+
+        ApplicationLogger::event('Redirecting user to Zerodha login.');
 
         return redirect()->away($this->kiteSessionManager->getLoginUrl());
     }
@@ -27,6 +31,10 @@ class ZerodhaAuthController extends FrontMainController
     public function handleCallback(Request $request): RedirectResponse
     {
         if ($request->filled('status') && $request->string('status')->lower()->toString() !== 'success') {
+            ApplicationLogger::warning('Zerodha login callback returned non-success status.', [
+                'status' => $request->input('status'),
+            ]);
+
             return redirect()
                 ->route('home')
                 ->with('error', 'Zerodha login was cancelled or not completed.');
@@ -35,6 +43,8 @@ class ZerodhaAuthController extends FrontMainController
         $requestToken = $request->string('request_token')->trim()->toString();
 
         if ($requestToken === '') {
+            ApplicationLogger::warning('Zerodha callback missing request_token.');
+
             return redirect()
                 ->route('home')
                 ->with('error', 'Missing request_token in Zerodha callback URL.');
@@ -43,7 +53,7 @@ class ZerodhaAuthController extends FrontMainController
         try {
             $session = $this->kiteSessionManager->exchangeRequestToken($requestToken);
 
-            Log::info('Zerodha session stored successfully.', [
+            ApplicationLogger::event('Zerodha session stored successfully.', [
                 'user_id' => $session['user_id'] ?? null,
                 'token_file_path' => $this->kiteSessionManager->getTokenFilePath(),
             ]);
@@ -52,10 +62,10 @@ class ZerodhaAuthController extends FrontMainController
                 ->route('dashboard')
                 ->with('success', 'Zerodha connected successfully. Live dashboard is ready.');
         } catch (\Throwable $exception) {
-            Log::error('Zerodha callback failed.', [
-                'message' => $exception->getMessage(),
-                'exception' => $exception,
-            ]);
+            ApplicationLogger::error(
+                'Zerodha callback failed.',
+                ApplicationLogger::exceptionContext($exception)
+            );
 
             return redirect()
                 ->route('home')
@@ -66,6 +76,7 @@ class ZerodhaAuthController extends FrontMainController
     public function logout(): RedirectResponse
     {
         $this->kiteSessionManager->clearSession();
+        ApplicationLogger::event('Zerodha session cleared by logout action.');
 
         return redirect()
             ->route('home')

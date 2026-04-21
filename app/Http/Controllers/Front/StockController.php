@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Front;
 
 use App\Services\KiteSessionManager;
+use App\Support\ApplicationLogger;
 use App\Support\TradingInstrumentRegistry;
-use Illuminate\Support\Facades\Log;
 use KiteConnect\KiteConnect;
 
 class StockController extends FrontMainController
@@ -33,6 +33,10 @@ class StockController extends FrontMainController
         $sessionData = $kiteSessionManager->getSessionData();
 
         if (! $sessionData || ! filled($kiteSessionManager->getAccessToken())) {
+            ApplicationLogger::warning('Dashboard access redirected because Zerodha session is missing.', [
+                'route' => 'dashboard',
+            ]);
+
             return redirect()
                 ->route('home')
                 ->with('error', 'Connect Zerodha first to open the live dashboard.');
@@ -69,9 +73,12 @@ class StockController extends FrontMainController
                 'sessionData' => $sessionData,
             ]);
         } catch (\Throwable $e) {
-            Log::error('Kite API Error: '.$e->getMessage(), [
-                'exception' => $e,
-            ]);
+            ApplicationLogger::error(
+                'Live dashboard quote loading failed.',
+                ApplicationLogger::exceptionContext($e, [
+                    'route' => 'dashboard',
+                ])
+            );
 
             return view('Front.stocks', [
                 'error' => 'Live mode could not connect to Zerodha: '.$e->getMessage().'. If today\'s token has expired, reconnect from the home page.',
